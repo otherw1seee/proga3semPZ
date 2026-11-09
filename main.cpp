@@ -1,6 +1,7 @@
 #include "DynamicArray.h"
 #include <iostream>
 #include <windows.h>
+#include <stdexcept>
 
 DynamicArray vvodDynamicArray() {
     int size;
@@ -15,9 +16,12 @@ DynamicArray vvodDynamicArray() {
         int value;
         std::cout << "Enter value for index " << i << " (from -100 to 100):\n";
         std::cin >> value;
-        while (!arr.set(i, value)) {
-            std::cout << "Invalid value. Try again:\n";
-            std::cin >> value;
+        try {
+            arr.set(i, value);
+        }
+        catch (const std::invalid_argument& error) {
+            std::cout << error.what() << ". Try again:\n";
+            i--;
         }
     }
     return arr;
@@ -41,8 +45,8 @@ int main() {
     try {
         std::cout << "Element: " << arr1.get(index) << "\n";
     }
-    catch (const char* error) {
-        std::cout << error << "\n";
+    catch (const std::out_of_range& error) {
+        std::cout << error.what() << "\n";
     }
     std::cout << "\n";
     std::cout << "CHANGING AN ELEMENT\n";
@@ -51,11 +55,15 @@ int main() {
     std::cin >> index;
     std::cout << "Enter new value (from -100 to 100):\n";
     std::cin >> value;
-    if (arr1.set(index, value)) {
+    try {
+        arr1.set(index, value);
         std::cout << "Element successfully changed\n";
     }
-    else {
-        std::cout << "Error: invalid index or value\n";
+    catch (const std::out_of_range& error) {
+        std::cout << error.what() << "\n";
+    }
+    catch (const std::invalid_argument& error) {
+        std::cout << error.what() << "\n";
     }
 
     std::cout << "First array:\n";
@@ -75,29 +83,39 @@ int main() {
     std::cout << "Enter value to add to the end of the first array (from -100 to 100):\n";
     std::cin >> value;
 
-    if (arr1.pushBack(value)) {
+    try {
+        arr1.pushBack(value);
         std::cout << "First array after adding an element:\n";
         arr1.print();
     }
-    else {
-        std::cout << "Error: value must be from -100 to 100\n";
+    catch (const std::invalid_argument& error) {
+        std::cout << error.what() << "\n";
     }
 
     std::cout << "\n";
     std::cout << "ADDING ARRAYS\n";
 
-    arr1.add(arr2);
-
-    std::cout << "First array after adding the second array:\n";
-    arr1.print();
+    try {
+        arr1.add(arr2);
+        std::cout << "First array after adding the second array:\n";
+        arr1.print();
+    }
+    catch (const std::out_of_range& error) {
+        std::cout << error.what() << "\n";
+    }
 
     std::cout << "\n";
     std::cout << "SUBTRACTING ARRAYS\n";
 
-    arr1.subtract(arr2);
+    try {
+        arr1.subtract(arr2);
+        std::cout << "First array after subtracting the second array:\n";
+        arr1.print();
+    }
+    catch (const std::out_of_range& error) {
+        std::cout << error.what() << "\n";
+    }
 
-    std::cout << "First array after subtracting the second array:\n";
-    arr1.print();
 
     std::cin.ignore();
     std::cin.get();
