@@ -1,7 +1,11 @@
 #include "DynamicArray.h"
 #include <iostream>
+#include <stdexcept>
 
 DynamicArray::DynamicArray(int n){
+    if (n <= 0) {
+        throw std::invalid_argument("Invalid array size");
+    }
     size = n;
     data = new int[size];
 
@@ -31,11 +35,11 @@ void DynamicArray::print(){
 
 bool DynamicArray::set(int index, int value){
     if (index < 0 || index >= size){
-    return false;
+    throw std::out_of_range("Index out of range");
     }
 
     if (value < -100 || value > 100) {
-    return false;
+    throw std::invalid_argument("Value must be from -100 to 100");
     }
 
     data[index] = value;
@@ -44,15 +48,15 @@ bool DynamicArray::set(int index, int value){
 
 int DynamicArray::get(int index) {
     if (index < 0 || index >= size) {
-        throw "Index out of range";
+        throw std::out_of_range("Index out of range");
     }
     return data[index];
 }
 bool DynamicArray::pushBack(int value) {
     if (value < -100 || value > 100) {
-        return false;
+        throw std::invalid_argument("Value must be from -100 to 100");
     }
-   
+
     int* newData = new int[size + 1];
 
     for (int i = 0; i < size; i++) {
@@ -69,6 +73,9 @@ bool DynamicArray::pushBack(int value) {
 }
 
 void DynamicArray::add(const DynamicArray& other) {
+    if (size != other.size) {
+        throw std::out_of_range("Arrays have different sizes");
+    }
     for (int i = 0; i < size; i++) {
         int value = 0;
 
@@ -81,6 +88,9 @@ void DynamicArray::add(const DynamicArray& other) {
 }
 
 void DynamicArray::subtract(const DynamicArray& other) {
+    if (size != other.size) {
+        throw std::out_of_range("Arrays have different sizes");
+    }
     for (int i = 0; i < size; i++) {
         int value = 0;
 
@@ -91,4 +101,3 @@ void DynamicArray::subtract(const DynamicArray& other) {
         data[i] -= value;
     }
 }
-
